@@ -5,6 +5,7 @@ entity:
     first_name:  STR,  func.sample(firstname, ~title)
     last_name:   STR,  func.sample(lastname)
     email:       STR,  func.ref(first_name).func.ref(last_name)@func.sample(email)
+    religion:    STR,  func.sample(religion)
 
 api:
   - method:    GET

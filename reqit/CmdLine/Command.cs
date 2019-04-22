@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace reqit.CmdLine
@@ -85,9 +86,23 @@ namespace reqit.CmdLine
             main.Main(args, request);
 
             redirectOutput(tempFile, false);
-            string output = File.ReadAllText(tempFile);
-            File.Delete(tempFile);
+            string output = "";
+            for (int retry = 0; retry < 8; retry++)
+            {
+                try
+                {
+                    output = File.ReadAllText(tempFile);
+                    break;
+                }
+                catch (Exception e)
+                {
+                    // Try again - Gets a file in use error sometimes
+                    output = e.Message;
+                    Thread.Sleep(100);
+                }
+            }
 
+            File.Delete(tempFile);
             return output;
         }
 
@@ -887,7 +902,6 @@ namespace reqit.CmdLine
                 // Stop output redirection
                 Console.SetOut(consoleWriter);
                 redirectWriter.Close();
-                redirectStream.Close();
                 return true;
             }
 
