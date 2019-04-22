@@ -1,0 +1,426 @@
+{
+	"info": {
+		"_postman_id": "e64136bc-fb35-4870-aeef-96a2991b4959",
+		"name": "reqit",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/employees",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/employees",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/employees/{id}",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/employees/1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"employees",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/employees/{id}",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    title: \"Mr.\",\r\n    first_name: \"Tom\",\r\n    last_name: \"Cruise\",\r\n    email: \"Tom.Cruise@hollywood.com\",\r\n}"
+				},
+				"url": {
+					"raw": "{{host}}/employees/1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"employees",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/employees",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    title: \"Mr.\",\r\n    first_name: \"Tom\",\r\n    last_name: \"Cruise\",\r\n    email: \"Tom.Cruise@hollywood.com\",\r\n}"
+				},
+				"url": {
+					"raw": "{{host}}/employees",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/employees/{id}",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/employees/1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"employees",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Persist - Generate employees",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}?cmd=read -e employee_list -o employees/employee_{id}",
+					"host": [
+						"{{host}}"
+					],
+					"query": [
+						{
+							"key": "cmd",
+							"value": "read -e employee_list -o employees/employee_{id}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Persist - List employees",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}?cmd=persist --def=employees/employee_{id} --show",
+					"host": [
+						"{{host}}"
+					],
+					"query": [
+						{
+							"key": "cmd",
+							"value": "persist --def=employees/employee_{id} --show"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Persist - Delete employees",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}?cmd=persist --def=employees/employee_{id} --delete",
+					"host": [
+						"{{host}}"
+					],
+					"query": [
+						{
+							"key": "cmd",
+							"value": "persist --def=employees/employee_{id} --delete"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Command - Help",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}?cmd=--help",
+					"host": [
+						"{{host}}"
+					],
+					"query": [
+						{
+							"key": "cmd",
+							"value": "--help"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Command - Functions Help",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}?cmd=--funchelp",
+					"host": [
+						"{{host}}"
+					],
+					"query": [
+						{
+							"key": "cmd",
+							"value": "--funchelp"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Command - Read entity",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}?cmd=read -e employee",
+					"host": [
+						"{{host}}"
+					],
+					"query": [
+						{
+							"key": "cmd",
+							"value": "read -e employee"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Command - Read samples list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}?cmd=read --slist",
+					"host": [
+						"{{host}}"
+					],
+					"query": [
+						{
+							"key": "cmd",
+							"value": "read --slist"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Command - Read YAML file",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}?cmd=read --yaml",
+					"host": [
+						"{{host}}"
+					],
+					"query": [
+						{
+							"key": "cmd",
+							"value": "read --yaml"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Command - Write YAML file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}?cmd=write --yaml",
+					"host": [
+						"{{host}}"
+					],
+					"query": [
+						{
+							"key": "cmd",
+							"value": "write --yaml"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Command - Reload YAML file",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}?cmd=run",
+					"host": [
+						"{{host}}"
+					],
+					"query": [
+						{
+							"key": "cmd",
+							"value": "run"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Command - Write sample entity",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}?cmd=write -e ~sample",
+					"host": [
+						"{{host}}"
+					],
+					"query": [
+						{
+							"key": "cmd",
+							"value": "write -e ~sample"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Command - Write employee CRUD",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\tid: \"func.num(4)\",\r\n    title: \"func.sample(title)\",\r\n    first_name: \"func.sample(firstname, ~title)\",\r\n    last_name: \"func.sample(lastname)\",\r\n    email: \"func.ref(first_name).func.ref(last_name)@func.sample(email)\"\r\n}"
+				},
+				"url": {
+					"raw": "{{host}}?cmd=write -e employee -m ~crud",
+					"host": [
+						"{{host}}"
+					],
+					"query": [
+						{
+							"key": "cmd",
+							"value": "write -e employee -m ~crud"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
