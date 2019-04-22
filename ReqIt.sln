@@ -1,10 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "reqit", "reqit\reqit.csproj", "{7011EDF9-9236-4C58-8288-A4201F707927}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "reqit_tests", "reqit_tests\reqit_tests.csproj", "{4C5DDC63-D443-4965-A2C8-A6D4E707B482}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "reqit_tests", "reqit_tests\reqit_tests.csproj", "{4C5DDC63-D443-4965-A2C8-A6D4E707B482}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "reqit_mon", "reqit_mon\reqit_mon.csproj", "{F9566B01-549C-4080-9948-1BAF1DCA4872}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +22,10 @@ Global
 		{4C5DDC63-D443-4965-A2C8-A6D4E707B482}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C5DDC63-D443-4965-A2C8-A6D4E707B482}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C5DDC63-D443-4965-A2C8-A6D4E707B482}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9566B01-549C-4080-9948-1BAF1DCA4872}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9566B01-549C-4080-9948-1BAF1DCA4872}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9566B01-549C-4080-9948-1BAF1DCA4872}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9566B01-549C-4080-9948-1BAF1DCA4872}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
