@@ -97,7 +97,7 @@ namespace reqit.Engine
                 bool isFirst = true;
                 foreach (var entityName in entity.ChildOrder)
                 {
-                    var toJsonStr = ToJson(fullName, entity.ChildEntities[entityName], cache, mods, ++nestedLevel);
+                    var toJsonStr = ToJson(fullName, entity.ChildEntities[entityName], cache, mods, nestedLevel + 1);
                     if (toJsonStr.Length > 0)
                     {
                         if (!isFirst)
@@ -147,11 +147,11 @@ namespace reqit.Engine
 
                 if (refEntity.Type == Entity.Types.REPEAT)
                 {
-                    sb.Append($"{ToJson(refParent, refEntity, cache, mods, ++nestedLevel, "#" + knownName)}");
+                    sb.Append($"{ToJson(refParent, refEntity, cache, mods, nestedLevel + 1, "#" + knownName)}");
                 }
                 else
                 {
-                    sb.Append($"{ToJson(refParent, refEntity, cache, mods, ++nestedLevel, knownName)}");
+                    sb.Append($"{ToJson(refParent, refEntity, cache, mods, nestedLevel + 1, knownName)}");
                 }
             }
             else if (entity.Type == Entity.Types.REPEAT)
@@ -205,12 +205,12 @@ namespace reqit.Engine
                     if (modParent == null)
                     {
                         // Use a clean cache for each instance (so they are not related)
-                        sb.Append($"{ToJson(null, refEntity, new Cache(), mods, ++nestedLevel, knownName)}");
+                        sb.Append($"{ToJson(null, refEntity, new Cache(), mods, nestedLevel + 1, knownName)}");
                     }
                     else
                     {
                         // Getting data from request which is in cache
-                        sb.Append($"{ToJson(modParent + (i + 1), refEntity, cache, mods, ++nestedLevel, knownName)}");
+                        sb.Append($"{ToJson(modParent + (i + 1), refEntity, cache, mods, nestedLevel + 1, knownName)}");
                     }
                 }
                 sb.Append("]");

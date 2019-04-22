@@ -92,6 +92,7 @@ namespace reqit_mon
             var lastWrite = File.GetLastWriteTime(yamlFile);
 
             Console.WriteLine($"Monitoring {yamlFile} ...");
+            int fetch = 0;
             while (true)
             {
                 var writeTime = File.GetLastWriteTime(yamlFile);
@@ -100,7 +101,7 @@ namespace reqit_mon
                     try
                     {
                         string message = CallPost(url, "?cmd=write --yaml", File.ReadAllText(yamlFile));
-                        Console.Write($"{writeTime.ToString("HH:mm:ss")} {message}");
+                        Console.Write($"{writeTime.ToString("HH:mm:ss")} upload: {message}");
                     }
                     catch (Exception e)
                     {
@@ -108,6 +109,30 @@ namespace reqit_mon
                     }
 
                     lastWrite = writeTime;
+                }
+
+                fetch++;
+                if (fetch > 3)
+                {
+                    // Get yaml file from server and see if it has changed
+                    try
+                    {
+                        string serverYaml = CallGet(url, "?cmd=read --yaml");
+                        if (!yaml.Equals(serverYaml))
+                        {
+                            yaml = serverYaml;
+                            File.WriteAllText(yamlFile, yaml);
+                            lastWrite = File.GetLastWriteTime(yamlFile);
+                            Console.WriteLine($"{lastWrite.ToString("HH:mm:ss")} download: YAML file changed on the server");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Failed to retrieve YAML file: {e.Message}");
+                        return;
+                    }
+
+                    fetch = 0;
                 }
 
                 Thread.Sleep(200);

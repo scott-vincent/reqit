@@ -49,13 +49,12 @@ namespace reqit.Engine
             try
             {
                 request = this.resolver.FindEntity(api.Request.EntityDef);
+                return this.formatter.EntityToJson(request, cache, api.Request.Mods);
             }
             catch (Exception e)
             {
-                throw new ArgumentException($"Request entity {e.Message}");
+                throw new ArgumentException($"Failed to resolve request entity: {e.Message}");
             }
-
-            return this.formatter.EntityToJson(request, cache, api.Request.Mods);
         }
 
         public string Call(Api.Methods method, string path, Dictionary<string, string> query, string request)
@@ -162,7 +161,14 @@ namespace reqit.Engine
                 if (response != null)
                 {
                     // Generate response
-                    json = this.formatter.EntityToJson(response, cache, api.Response.Mods);
+                    try
+                    {
+                        json = this.formatter.EntityToJson(response, cache, api.Response.Mods);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new ArgumentException($"Failed to resolve response entity: {e.Message}");
+                    }
                 }
             }
             else if (api.Method == Api.Methods.GET)
@@ -242,7 +248,14 @@ namespace reqit.Engine
                 if (response != null)
                 {
                     // Generate response
-                    json = this.formatter.EntityToJson(response, cache, api.Response.Mods);
+                    try
+                    {
+                        json = this.formatter.EntityToJson(response, cache, api.Response.Mods);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new ArgumentException($"Failed to resolve response entity: {e.Message}");
+                    }
                 }
 
                 string filename;
@@ -329,7 +342,14 @@ namespace reqit.Engine
                     throw new ArgumentException($"Failed to parse JSON in persist file '{filename}': {e.Message}");
                 }
 
-                return this.formatter.EntityToJson(response, cache, api.Response.Mods);
+                try
+                {
+                    return this.formatter.EntityToJson(response, cache, api.Response.Mods);
+                }
+                catch (Exception e)
+                {
+                    throw new ArgumentException($"Failed to resolve persist file '{filename}': {e.Message}");
+                }
             }
 
             return json;

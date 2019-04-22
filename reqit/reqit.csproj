@@ -9,9 +9,11 @@
   <ItemGroup>
     <None Remove="reqit.yaml" />
     <None Remove="sample.yaml" />
+    <None Remove="Samples\country" />
     <None Remove="Samples\email" />
     <None Remove="Samples\firstname" />
     <None Remove="Samples\lastname" />
+    <None Remove="Samples\religion" />
     <None Remove="Samples\title" />
   </ItemGroup>
 
@@ -22,6 +24,9 @@
     <Content Include="sample.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Samples\country">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Samples\email">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -29,6 +34,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Samples\lastname">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Samples\religion">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Samples\title">

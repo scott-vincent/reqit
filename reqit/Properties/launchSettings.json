@@ -21,7 +21,7 @@
       "commandName": "Project",
       "commandLineArgs": "run --admin",
       "launchBrowser": true,
-      "launchUrl": "api/employees",
+      "launchUrl": "employees",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

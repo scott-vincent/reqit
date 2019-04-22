@@ -8,9 +8,9 @@ alias:
 
 api:
   - method:    GET
-    path:      /api/employees/1
+    path:      /employees/1
     response:  employee
 
   - method:    GET
-    path:      /api/employees
+    path:      /employees
     response:  emp_list
