@@ -1,0 +1,8 @@
+.env
+.git
+.vs
+.vscode
+*/bin
+*/obj
+**/.toolstarget
+reqit.bak

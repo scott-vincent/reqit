@@ -1,0 +1,39 @@
+entity:
+  employee:
+    id:         STR,  func.gen(####-####)
+    title:      STR, func.sample(title)
+    first_name: STR, func.sample(firstname, ~title)   # first_name must have same gender as title
+    last_name:  STR, func.sample(lastname)
+    email:      STR, func.ref(first_name).func.ref(last_name)@func.sample(email)
+    start_date: DATE, func.date(NOW, -5y)             # Date between now and 5 years ago
+    salary:     NUM,  func.num(5,2)                   # e.g. 12345.67
+    dependents: REF, [dependent, 0-5]                 # Between 0 and 5 dependents
+
+  dependent:
+    name: STR, func.sample(firstname)
+    mother: STR, func.sample(firstname, F) func.sample(lastname)
+
+alias:
+  emp_list: "[employee, 0-7]"                         # An array of 0 to 7 employees
+
+api:
+  - method: GET
+    path: "/api/employees"
+    response: emp_list
+    
+  - method: GET
+    path: "/api/employees/{id}"
+    response: employee, id=~path.id                   # Replace id with id from path
+
+  - method: PUT
+    path: "/api/employees/{id}"
+    request: employee, id=~path.id
+    response: employee, *=~request                    # Take any attribute from request if available
+
+  - method: POST
+    path: "/api/employees"
+    request: employee, !id                            # id should be excluded from request as it is generated
+    response: employee, *=~request
+    
+  - method: DELETE
+    path: "/api/employees/{id}"

@@ -1,0 +1,30 @@
+# Title, Gender, Rarity
+<null>,,2                      
+Mr.,M
+Mrs.,F
+Miss,F
+Ms.,F
+Dr.,,4
+Prof.,,3
+Sir,M,2
+Dame,F,2
+Hon.,,2
+Rt. Hon.,,2
+Admiral,,2
+Captain,,2
+Colonel,,2
+Commander,,2
+Lieutenant,,2
+Major,,2
+Duke,M,2
+Duchess,F,2
+Count,M,2
+Countess,F,2
+Earl,M,2
+Viscount,M,2
+Baron,M,2
+Baroness,F,2
+Lord,M,2
+Lady,F,2
+Prince,M,1
+Princess,F,1

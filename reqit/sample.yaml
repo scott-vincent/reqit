@@ -1,0 +1,56 @@
+entity:
+  sample:
+    id1:        STR, id-1234
+    id2:        STR, func.gen(####-####)
+    id3:        STR, func.gen(^^^^-####)
+    id4:        STR, func.gen(***:***:@@@@)
+    id5:        STR, func.str(4-8,cap)-func.num(4-8)
+    val1:       NUM, 1234
+    val2:       NUM, func.rand(99999)
+    val3:       NUM, func.rand(10000-99999)
+    val4:       NUM, func.num(5)
+    amount1:    NUM, 1234.56
+    amount2:    NUM, func.rand(99999,2)
+    amount3:    NUM, func.rand(10000-99999,2)
+    amount4:    NUM, func.num(5,2)
+    date1:      DATE, 2019-03-29T16:25:52
+    date2:      DATE, func.date(NOW)
+    date3:      DATE, func.date(NOW, -5d)
+    date4:      STR, func.date(NOW,, "dddd, dd MMMM yyyy HH:mm")
+    time1:      STR, 23:41:07
+    time2:      STR, func.time(NOW)
+    time3:      STR, func.time(NOW, -2H)
+    time4:      STR, func.time(NOW,, "HH:mm")
+    str1:       STR, func.if(7, >4, yes, no)
+    str2:       BOOL, func.if(~str1, =yes, true, false)
+    num1:       NUM, func.math(2, +7, -3, *2)
+    num2:       NUM, func.math(2, +7.25, -~num1, /2)
+    num3:       NUM, func.math(~num1, +~num2)
+    num3_trunc: NUM,  func.num(~num3, 2t)
+    num3_round: NUM,  func.num(~num3, 2r)
+    num3_int:   NUM,  func.num(~num3, 0t)
+    bool:       BOOL, false
+    nothing:    STR, <null>
+    empty:      STR,
+    uuid:       STR, func.gen(UUID)
+    title:      STR, func.sample(title, first_name)
+    first_name: STR, func.sample(firstname)
+    last_name:  STR, func.sample(firstname)
+    email:      STR, func.ref(first_name).func.ref(last_name)@func.sample(email)
+    full_name:  STR, func.ref(last_name), func.ref(first_name)
+    birth_date: STR, func.date(NOW, -18-102y)
+    father:     STR, func.sample(firstname, M)
+    mother:     STR, func.sample(firstname, F)
+    account:    STR, func.pick(Current, Savings, Credit)
+    arrays:
+      array1:
+        - STR,this
+        - STR,is
+        - STR,an
+        - STR,array
+      array2:
+        - orderNum: NUM, 123
+          quantity: NUM, 5000
+        - orderNum: NUM, 124
+          quantity: NUM, 8999
+    
