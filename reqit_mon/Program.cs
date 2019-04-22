@@ -100,7 +100,8 @@ namespace reqit_mon
                 {
                     try
                     {
-                        string message = CallPost(url, "?cmd=write --yaml", File.ReadAllText(yamlFile));
+                        yaml = File.ReadAllText(yamlFile);
+                        string message = CallPost(url, "?cmd=write --yaml", yaml);
                         Console.Write($"{writeTime.ToString("HH:mm:ss")} upload: {message}");
                     }
                     catch (Exception e)
