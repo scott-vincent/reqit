@@ -1,0 +1,16 @@
+entity:
+  employee:
+    id:          NUM,  func.num(4)
+    title:       STR,  func.sample(title)
+    first_name:  STR,  func.sample(firstname, ~title)
+    last_name:   STR,  func.sample(lastname)
+    email:       STR,  func.ref(first_name).func.ref(last_name)@func.sample(email)
+
+api:
+  - method:    GET
+    path:      /employees/{id}
+    response:  employee
+
+  - method:    GET
+    path:      /employees
+    response:  [employee, 0-5]

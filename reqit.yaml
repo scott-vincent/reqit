@@ -1,0 +1,6 @@
+entity:
+  employee:
+    id:   NUM, func.num(4)
+    name: STR, func.sample(firstname) func.sample(lastname)
+    religion: STR, func.sample(mytest)
+    country: STR, func.sample(mytest)

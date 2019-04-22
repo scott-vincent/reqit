@@ -1,0 +1,4 @@
+entity:
+  employee:
+    id:   NUM, 1
+    name: STR, Tom Cruise

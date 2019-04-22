@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2782e486-78be-4ad7-8f5d-dee01a6a8013",
+		"_postman_id": "e64136bc-fb35-4870-aeef-96a2991b4959",
 		"name": "reqit",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -248,30 +248,6 @@
 			"response": []
 		},
 		{
-			"name": "Command - List sample files",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "{{host}}?cmd=read --slist",
-					"host": [
-						"{{host}}"
-					],
-					"query": [
-						{
-							"key": "cmd",
-							"value": "read --slist"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Command - Read entity",
 			"request": {
 				"method": "GET",
@@ -289,6 +265,30 @@
 						{
 							"key": "cmd",
 							"value": "read -e employee"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Command - Read samples list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}?cmd=read --slist",
+					"host": [
+						"{{host}}"
+					],
+					"query": [
+						{
+							"key": "cmd",
+							"value": "read --slist"
 						}
 					]
 				}
@@ -405,7 +405,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\tid: \"func.num(4)\",\r\n    title: \"func.sample(title)\",\r\n    first_name: \"func.sample(firstname, ~title)\",\r\n    last_name: \"func.sample(lastname)\",\r\n    email: \"func.ref(first_name).func.ref(last_name)@func.sample(email)\"\r\n}"
+					"raw": "{\r\n\tid: \"func.num(4)\",\r\n    title: \"func.sample(title)\",\r\n    first_name: \"func.sample(firstname, ~title)\",\r\n    last_name: \"func.sample(lastname)\",\r\n    email: \"func.ref(first_name).func.ref(last_name)@func.sample(email)\",\r\n    religion: \"func.sample(religion)\",\r\n    country: \"func.sample(country)\"\r\n}"
 				},
 				"url": {
 					"raw": "{{host}}?cmd=write -e employee -m ~crud",
