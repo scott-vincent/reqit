@@ -1,4 +1,5 @@
-﻿using System;
+﻿using reqit.CmdLine;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,6 +21,8 @@ namespace reqit.Models
     /// </summary>
     public class Persistence
     {
+        public static string PERSIST_DIR = Path.Combine(MyMain.GetWorkingDir(), "persist");
+
         public string OutputDef { get; }
         public HashSet<string> OutputVars { get; }
         public string Folder { get; }
@@ -34,8 +37,8 @@ namespace reqit.Models
             // Make sure folder is valid and exists
             try
             {
-                Folder = Path.GetDirectoryName(OutputDef);
-                if (!string.IsNullOrEmpty(Folder) && !Directory.Exists(Folder))
+                Folder = Path.Combine(PERSIST_DIR, Path.GetDirectoryName(OutputDef));
+                if (!Directory.Exists(Folder))
                 {
                     Directory.CreateDirectory(Folder);
                 }
@@ -102,6 +105,19 @@ namespace reqit.Models
 
         public string InsertVars(Cache vars, ApiBody request, ApiBody response)
         {
+            // Make sure folder is valid and exists
+            try
+            {
+                if (!Directory.Exists(Folder))
+                {
+                    Directory.CreateDirectory(Folder);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Failed to create folder '{Folder}': {e.Message}");
+            }
+
             var sb = new StringBuilder();
             int pos = 0;
             int varStart = Pattern.IndexOf('{');

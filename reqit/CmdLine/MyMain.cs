@@ -3,7 +3,9 @@ using reqit.Models;
 using reqit.Parsers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace reqit.CmdLine
@@ -25,6 +27,22 @@ namespace reqit.CmdLine
         public MyMain(ICommand command)
         {
             this.command = command;
+        }
+
+        public static string GetWorkingDir()
+        {
+
+            // Working dir should be place where assembly (.dll) was loaded from 
+            string workingDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+
+            if (workingDir.StartsWith("file:\\", StringComparison.CurrentCultureIgnoreCase))
+            {
+                return workingDir.Substring(6);
+            }
+            else
+            {
+                return workingDir;
+            }
         }
 
         public void Main(string[] args, string request = null)

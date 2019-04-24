@@ -776,11 +776,16 @@ namespace reqit.CmdLine
             }
 
             int deleted = 0;
+            string persistFolder = Path.GetDirectoryName(persist.OutputDef);
+            if (persistFolder != "")
+            {
+                persistFolder += "/";
+            }
             foreach (var filename in Directory.GetFiles(persist.Folder, persist.WildPattern).OrderBy(f => f))
             {
                 if (showFiles)
                 {
-                    Console.WriteLine(filename);
+                    Console.WriteLine(persistFolder + Path.GetFileName(filename));
                 }
                 else if (deleteFiles)
                 {
@@ -883,7 +888,7 @@ namespace reqit.CmdLine
             Route route = new Route(path);
             var vars = route.GetVars();
 
-            foreach(var v in vars)
+            foreach (var v in vars)
             {
                 if (pathVars.Length > 0)
                 {
@@ -1127,16 +1132,23 @@ namespace reqit.CmdLine
         {
             int count = 0;
 
+            string fullName = multiOut.OutputDef;
+            if (!Path.IsPathRooted(fullName))
+            {
+                fullName = Path.Combine(Persistence.PERSIST_DIR, fullName);
+            }
+
+            string folder = Path.GetDirectoryName(fullName);
+            string fileDef = Path.GetFileName(fullName);
+
             // Make sure folder exists
-            string folder;
             try
             {
-                folder = Path.GetDirectoryName(multiOut.OutputDef);
-                if (!string.IsNullOrEmpty(folder) && !Directory.Exists(folder))
+                if (!Directory.Exists(folder))
                 {
                     Directory.CreateDirectory(folder);
                 }
-            }
+}
             catch (Exception e)
             {
                 throw new Exception($"Failed to create folder for '{multiOut.OutputDef}': {e.Message}");
@@ -1153,7 +1165,7 @@ namespace reqit.CmdLine
 
                 foreach (var entity in this.jsonParser.ArrayEntities(output, multiOut))
                 {
-                    WriteSingle(entity, multiOut);
+                    WriteSingle(folder, fileDef, entity);
                     count++;
                 }
             }
@@ -1166,16 +1178,16 @@ namespace reqit.CmdLine
                 }
 
                 var entity = this.jsonParser.ObjectEntity(output, multiOut);
-                WriteSingle(entity, multiOut);
+                WriteSingle(folder, fileDef, entity);
                 count++;
             }
 
             return count;
         }
 
-        private void WriteSingle(PersistEntity entity, Persistence persist)
+        private void WriteSingle(string folder, string fileDef, PersistEntity entity)
         {
-            string filename = entity.GetFilename(persist.OutputDef);
+            string filename = Path.Combine(folder, entity.GetFilename(fileDef));
 
             if (File.Exists(filename))
             {

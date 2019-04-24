@@ -1,17 +1,20 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using reqit.CmdLine;
 using reqit.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace reqit.Parsers
 {
     public class SamplesParser : ISamplesParser
     {
-        public static string SamplesFolder = "Samples";
         private enum Columns { GENDER, RARITY };
+
+        public static string SAMPLES_DIR = Path.Combine(MyMain.GetWorkingDir(), "Samples");
 
         /// <summary>
         /// Scans the samples folder and returns the list of sample file names.
@@ -21,7 +24,7 @@ namespace reqit.Parsers
         {
             var sampleNames = new List<string>();
 
-            foreach (var file in Directory.GetFiles(SamplesFolder))
+            foreach (var file in Directory.GetFiles(SAMPLES_DIR))
             {
                 sampleNames.Add(Path.GetFileName(file));
             }
@@ -37,7 +40,7 @@ namespace reqit.Parsers
         /// </summary>
         public Samples LoadSamplesFromFile(string samplesName)
         {
-            string samplesFile = Path.Combine(SamplesFolder, samplesName);
+            string samplesFile = Path.Combine(SAMPLES_DIR, samplesName);
 
             if (!File.Exists(samplesFile))
             {

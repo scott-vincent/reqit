@@ -1,8 +1,10 @@
-﻿using reqit.Models;
+﻿using reqit.CmdLine;
+using reqit.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.RepresentationModel;
@@ -11,8 +13,8 @@ namespace reqit.Parsers
 {
     public class YamlParser : IYamlParser
     {
-        public static string DEFAULT = "reqit.yaml";
-        public static string SAMPLE = "sample.yaml";
+        public static string DEFAULT = Path.Combine(MyMain.GetWorkingDir(), "reqit.yaml");
+        public static string SAMPLE = Path.Combine(MyMain.GetWorkingDir(), "sample.yaml");
 
         public ApiService ApiService { get; private set; }
         private YamlMappingNode rootNode;
