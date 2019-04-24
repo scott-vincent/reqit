@@ -111,7 +111,7 @@ namespace reqit.Engine
                 return entity;
             }
 
-            throw new Exception($"{fullName}: Not found");
+            throw new Exception($"Entity '{fullName}' not found");
         }
 
         /// <summary>

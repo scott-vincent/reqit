@@ -96,7 +96,7 @@ namespace reqit_mon
             while (true)
             {
                 var writeTime = File.GetLastWriteTime(yamlFile);
-                if (writeTime != lastWrite)
+                if (DateTime.Compare(writeTime, lastWrite) != 0)
                 {
                     try
                     {
