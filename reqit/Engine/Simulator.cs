@@ -10,6 +10,8 @@ namespace reqit.Engine
 {
     public class Simulator : ISimulator
     {
+        private Random random = new Random();
+
         private readonly IResolver resolver;
         private readonly IFormatter formatter;
         private readonly IJsonParser jsonParser;
@@ -207,7 +209,7 @@ namespace reqit.Engine
                                 sb.Append(", ");
                             }
 
-                            sb.Append(LoadResponse(filename, cache, api));
+                            sb.Append(LoadResponse(filename, cache, api, false));
                         }
 
                         if (sb.Length == 0)
@@ -234,12 +236,33 @@ namespace reqit.Engine
                             throw new ArgumentException(e.Message);
                         }
 
-                        if (!File.Exists(filename))
+                        bool forceResolve = false;
+                        if (filename.Contains('*'))
                         {
-                            throw new KeyNotFoundException();
+                            // Choose file at random
+                            var filenames = Directory.GetFiles(api.Persist.Folder, Path.GetFileName(filename));
+                            if (filenames.Length == 0)
+                            {
+                                throw new KeyNotFoundException();
+                            }
+
+                            int chosen = random.Next(filenames.Length);
+                            filename = filenames[chosen];
+
+                            // Need to force resolve so id gets replaced
+                            // with requested one (by response mods).
+                            forceResolve = true;
+                        }
+                        else
+                        {
+                            // Load specific file
+                            if (!File.Exists(filename))
+                            {
+                                throw new KeyNotFoundException();
+                            }
                         }
 
-                        json = LoadResponse(filename, cache, api);
+                        json = LoadResponse(filename, cache, api, forceResolve);
                     }
                 }
             }
@@ -325,17 +348,17 @@ namespace reqit.Engine
         /// then convert entity back to JSON which will resolve
         /// all funcs.
         /// </summary>
-        private string LoadResponse(string filename, Cache cache, Api api)
+        private string LoadResponse(string filename, Cache cache, Api api, bool forceResolve)
         {
             string json = File.ReadAllText(filename);
 
             // Only do double conversion if we have to
-            if (json.Contains("func."))
+            if (forceResolve || json.Contains("func."))
             {
                 Entity response;
                 try
                 {
-                    response = this.jsonParser.LoadEntity("response", json);
+                    response = this.jsonParser.LoadEntity(api.Response.EntityName, json);
                 }
                 catch (Exception e)
                 {

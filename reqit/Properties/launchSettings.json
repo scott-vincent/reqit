@@ -20,7 +20,6 @@
     "reqit": {
       "commandName": "Project",
       "commandLineArgs": "run --admin",
-      "launchBrowser": true,
       "launchUrl": "employees",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

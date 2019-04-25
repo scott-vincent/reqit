@@ -19,7 +19,7 @@ namespace reqit.CmdLine
     /// </summary>
     public class MyMain
     {
-        private static string VersionNum = "0.9.0";
+        private static string VersionNum = "1.0.0";
         private static string CopyrightYear = "2019";
 
         private readonly ICommand command;

@@ -132,70 +132,78 @@ namespace reqit.Models
                 sb.Append(Pattern.Substring(pos, varStart - pos));
 
                 string name = Pattern.Substring(varStart + 1, varEnd - (varStart + 1));
-                ResolvedValue resolved = null;
-                try
-                {
-                    if (name.StartsWith("path.") || name.StartsWith("query.") || name.StartsWith("request."))
-                    {
-                        resolved = vars.GetValue(name);
-                    }
-                    else
-                    {
-                        if (response != null)
-                        {
-                            resolved = vars.GetValueOrNull(response.EntityName + "." + name);
-                        }
 
-                        if (resolved == null)
-                        {
-                            if (request == null)
-                            {
-                                resolved = vars.GetValue(name);
-                            }
-                            else
-                            {
-                                resolved = vars.GetValue("request." + request.EntityName + "." + name);
-                            }
-                        }
-                    }
+                if (name.Equals("*"))
+                {
+                    sb.Append('*');
                 }
-                catch (Exception)
+                else
                 {
-                    if (response != null && response.Mods != null)
+                    ResolvedValue resolved = null;
+                    try
                     {
-                        // Variable might be in response mods.
-                        string newName = response.Mods.GetValueOrDefault(response.EntityName + "." + name);
-
-                        if (newName != null)
+                        if (name.StartsWith("path.") || name.StartsWith("query.") || name.StartsWith("request."))
                         {
-                            if (newName[0] == '~')
+                            resolved = vars.GetValue(name);
+                        }
+                        else
+                        {
+                            if (response != null)
                             {
-                                // Mod is a reference
-                                try
+                                resolved = vars.GetValueOrNull(response.EntityName + "." + name);
+                            }
+
+                            if (resolved == null)
+                            {
+                                if (request == null)
                                 {
-                                    resolved = vars.GetValue(newName.Substring(1));
+                                    resolved = vars.GetValue(name);
                                 }
-                                catch (Exception)
+                                else
                                 {
-                                    // Do nothing - will be caught by null check
+                                    resolved = vars.GetValue("request." + request.EntityName + "." + name);
                                 }
                             }
-                            else
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        if (response != null && response.Mods != null)
+                        {
+                            // Variable might be in response mods.
+                            string newName = response.Mods.GetValueOrDefault(response.EntityName + "." + name);
+
+                            if (newName != null)
                             {
-                                // Mod is a literal
-                                resolved = new ResolvedValue(name, Entity.Types.STR, newName);
-                                resolved.SetValue(newName);
+                                if (newName[0] == '~')
+                                {
+                                    // Mod is a reference
+                                    try
+                                    {
+                                        resolved = vars.GetValue(newName.Substring(1));
+                                    }
+                                    catch (Exception)
+                                    {
+                                        // Do nothing - will be caught by null check
+                                    }
+                                }
+                                else
+                                {
+                                    // Mod is a literal
+                                    resolved = new ResolvedValue(name, Entity.Types.STR, newName);
+                                    resolved.SetValue(newName);
+                                }
                             }
                         }
                     }
-                }
 
-                if (resolved == null)
-                {
-                    throw new Exception($"Persist definition '{OutputDef}' variable '{name}' does not match any known attribute.");
-                }
+                    if (resolved == null)
+                    {
+                        throw new Exception($"Persist definition '{OutputDef}' variable '{name}' does not match any known attribute.");
+                    }
 
-                sb.Append(resolved.Value);
+                    sb.Append(resolved.Value);
+                }
 
                 pos = varEnd + 1;
                 if (pos < Pattern.Length)

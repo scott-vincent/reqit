@@ -1054,10 +1054,11 @@ namespace reqit.CmdLine
                 string pathWithVar = $"{path}/{{{firstAttr}}}";
                 string persist = $"{entity.Name}s/{entity.Name}_{{{firstAttr}}}";
                 string delPersist = $"{entity.Name}s/{entity.Name}_{{path.{firstAttr}}}";
+                string comment = "Change persist var to {*} to return a persisted file chosen at random";
 
                 WriteApi(file, Api.Methods.GET, path, entity, persist);
                 file.WriteLine();
-                WriteApi(file, Api.Methods.GET, pathWithVar, entity, persist);
+                WriteApi(file, Api.Methods.GET, pathWithVar, entity, persist, comment);
                 file.WriteLine();
                 WriteApi(file, Api.Methods.PUT, pathWithVar, entity, persist);
                 file.WriteLine();
@@ -1073,7 +1074,8 @@ namespace reqit.CmdLine
             }
         }
 
-        private void WriteApi(StreamWriter file, Api.Methods method, string path, Entity entity, string persist = null)
+        private void WriteApi(StreamWriter file, Api.Methods method, string path, Entity entity,
+                string persist = null, string comment = null)
         {
             file.WriteLine($"  - method: {method}");
             file.WriteLine($"    path: \"{path}\"");
@@ -1120,6 +1122,11 @@ namespace reqit.CmdLine
                 if (persist != null)
                 {
                     file.WriteLine($"    persist: \"{persist}\"");
+                }
+
+                if (comment != null)
+                {
+                    file.WriteLine($"    # {comment}");
                 }
             }
         }
