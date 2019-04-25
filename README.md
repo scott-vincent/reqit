@@ -6,7 +6,7 @@ Windows, Mac or Linux (or under Docker).
 
 ## Introduction
 Driven by a single YAML file, you define entities and API endpoints that are used for
-synthetic data generation and REST API simulation. Data persistence is also available
+synthetic data generation and REST API simulation. Data persistence is also supported
 so you can implement a fully working Create-Read-Update-Delete (CRUD) API if you wish.
 
 Entities can be added either manually or by uploading JSON retrieved from real APIs and
@@ -39,6 +39,36 @@ or use a Package Manager to install the pre-requisites on Linux. See:
 dotnet-runtime-2.2.4-ubuntu.sh
 
 You can also run under Docker. The source includes Dockerfile and docker-compose.yml files.
+
+## Quick Start
+A few commands are available to get you up and running quickly.
+
+To generate an example CRUD API, type:
+
+reqit 
+
+If you now view the reqit.yaml file it will contain an entity called 'employee' and a complete
+set of API endpoints that use it.
+
+To generate a sample entity that shows how to use many of the available functions, type:
+
+reqit 
+
+This adds an entity called 'sample' to reqit.yaml. You can generate a set of data from this sample
+by typing:
+
+
+Each time you do this it will generate a new set of data.
+
+If you want to generate SQL insert statments for 10 samples, edit the reqit.yaml file and add a new
+section:
+
+alias:
+  sample_set: "[sample, 10]"
+  
+and then type:
+
+reqit 
 
 ## Documentation
 
