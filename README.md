@@ -226,4 +226,23 @@ so it will be generated.
 
 # reqit_mon
 An optional program "reqit monitor" is included to help you compose your reqit.yaml file when
-reqit is running remotely.
+reqit is running remotely (especially under Docker).
+
+To use reqit_mon, first ensure that reqit is running on a server somewhere in admin mode, i.e.
+`reqit run --admin`.
+
+Now type the following:
+
+```
+reqit_mon http://<server:5000>
+```
+
+This will download the remote reqit.yaml file to the current directory of the local machine and
+will then monitor both the local and the remote reqit.yaml file. Whenever changes are made to the
+local file it will be automatically uploaded to the remote server. The remote server will then
+automatically reload its YAML file, replacing it with the uploaded version. If the remote reqit.yaml
+file is changed, it will get re-downloaded and will overwrite the local version. This effectively
+ties the local and remote YAML files together so you can edit either one and they will remain in sync.
+
+If the reqit server terminates for any reason then reqit_mon will also terminate as it can no longer
+keep the YAML files in sync.
