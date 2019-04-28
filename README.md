@@ -62,42 +62,62 @@ To generate an example CRUD API you can use the write command which adds data to
 (or creates a new file if it doesn't already exist). First create your entity as a JSON file, e.g.
 
 ```
-echo {id: "func.num(4)", name: "func.sample(firstname)"} > myentity.json
+echo {id: "func.num(4)", name: "func.sample(firstname)"} > person.json
 ```
 
 Now type:
 
 ```
-reqit write -e myentity -m ~crud -i myentity.json
+reqit write -e person -m ~crud -i person.json
 ```
 
-If you now view the reqit.yaml file it will contain an entity called 'myentity', an alias called
-'myentity_list' and a complete set of API endpoints that use it.
+If you now view the reqit.yaml file it will contain an entity called 'person', an alias called
+'person_list' and a complete set of API endpoints that use it.
 
 Test your entity with one of the following commands:
 
 ```
-reqit read -e myentity
-reqit read -e myentity_list
+reqit read -e person
+reqit read -e person_list
 ```
 
-Test your API with the following commands (note that this API has persistence so you have to create
-some data before you can retrieve it so the first call will return a "Not found" error.
+Test your API with the following commands. Note that this API has persistence so the first call
+will return a "not found" error as you have to create some data before you can retrieve it.
 
 ```
+reqit call -m get -p /persons/1
+echo {name: "Bob"} > newperson.json
+reqit call -m put -p /persons/1 -i newperson.json
+reqit call -m get -p /persons/1
+echo {name: "Betty"} > newperson.json
+reqit call -m post -p /persons -i newperson.json
+reqit call -m get -p /persons
+reqit call -m delete -p /persons/1
+```
 
+Note that instead of using the "call" command you can actually call the API if reqit is running
+as a server. Try the following:
+
+```
+reqit run
+```
+
+Now try the following in Postman (or use a browser if you just want to do a GET):
+
+```
+GET http://localhost:5000/persons
 ```
 
 To generate SQL insert statements for your new entity, try the following:
 
 ```
-
+reqit read -e person_list --sql
 ```
 
 You can also replace `--sql` with `--csv` to generate CSV data instead and you can redirect the
-output to a file by adding `-o myentity.txt`.
+output to a file by adding `-o persons.txt`.
 
-To generate a sample entity that shows how to use many of the available functions, type:
+To generate a 'sample' entity that shows how to use many of the available functions, type:
 
 ```
 reqit write -e ~sample
