@@ -82,7 +82,7 @@ reqit read -e person_list
 ```
 
 Test your API with the following commands. Note that this API has persistence so the first call
-will return a "not found" error as you have to create some data before you can retrieve it.
+will return a `404 Not Found` error as you have to create some data before you can retrieve it.
 
 ```
 reqit call -m get -p /persons/1
