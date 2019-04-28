@@ -25,7 +25,7 @@ calling reqit directly from the command-line can also be done via an API call. F
 reqit run --admin
 
 will run reqit as a server and will enable "command-line as a service" mode. You can then
-call, e.g. "GET <<server>>:5000/?cmd=--help" to request help.
+call, e.g. "GET \<server>:5000/?cmd=--help" to request help.
 
 To supply input to the command line, use POST instead of GET and include a body.
 
@@ -43,32 +43,40 @@ You can also run under Docker. The source includes Dockerfile and docker-compose
 ## Quick Start
 A few commands are available to get you up and running quickly.
 
-To generate an example CRUD API, type:
+To generate an example CRUD API you can use the write command which adds data to the YAML file
+(or creates a new file if it doesn't already exist). First create your entity as a JSON file, e.g.
 
-reqit 
+  echo {id: "func.num(4)", name: "func.sample(firstname)"} > myentity.json
 
-If you now view the reqit.yaml file it will contain an entity called 'employee' and a complete
+Now type:
+
+  reqit write -e myentity -m ~crud -i myentity.json
+
+If you now view the reqit.yaml file it will contain an entity called 'myentity' and a complete
 set of API endpoints that use it.
 
 To generate a sample entity that shows how to use many of the available functions, type:
 
-reqit 
+  reqit write -e ~sample
 
 This adds an entity called 'sample' to reqit.yaml. You can generate a set of data from this sample
 by typing:
 
+  reqit read -e sample
 
 Each time you do this it will generate a new set of data.
 
 If you want to generate SQL insert statments for 10 samples, edit the reqit.yaml file and add a new
 section:
 
-alias:
-  sample_set: "[sample, 10]"
+  alias:
+    sample_set: "[sample, 10]"
   
 and then type:
 
-reqit 
+  reqit read -e sample_set -sql
+  
+You can redirect this output to a file by adding "-o sample_set.sql" to the above command.
 
 ## Documentation
 
