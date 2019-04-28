@@ -40,7 +40,7 @@ reqit --help
 ```
 
 To supply input to "command-line as a service", use POST instead of GET and include a body.
-This is the equivalent of suppying the `-i \<inputfile>` parameter.
+This is the equivalent of suppying the `-i <inputfile>` parameter.
 
 ## Pre-requisites
 The only pre-requisite is ASP.NET Core/.NET Core 2.2 Runtime which can be downloaded from here:
