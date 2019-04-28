@@ -58,7 +58,7 @@ You can also run under Docker. The source includes Dockerfile and docker-compose
 ## Quick Start
 A few commands are available to get you up and running quickly.
 
-To generate an example CRUD API you can use the write command which adds data to the YAML file
+To generate an example CRUD API you can use the write command which writes data to the YAML file
 `reqit\reqit.yaml`. Delete this file if it already exists as the write command always adds to
 the file (or creates it if it doesn't already exist) and we want to start with a clean file.
 Before creating the YAML file, create your entity as a JSON file, e.g.
