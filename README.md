@@ -22,7 +22,9 @@ reqit is designed to be run either locally or remotely, e.g. under Docker. This 
 by providing a "command-line as a service" option where anything that you can do by
 calling reqit directly from the command-line can also be done via an API call. For example,
 
+```
 reqit run --admin
+```
 
 will run reqit as a server and will enable "command-line as a service" mode. You can then
 call, e.g. `GET \<server>:5000/?cmd=--help` to request help.
@@ -90,7 +92,7 @@ and then type:
 reqit read -e sample_set -sql
 ```
 
-You can redirect this output to a file by adding "-o sample_set.sql" to the above command.
+You can redirect this output to a file by adding `-o sample_set.sql` to the above command.
 
 ## Documentation
 
@@ -111,7 +113,7 @@ into Postman this will help you greatly as it includes many of the available "co
 service" commands as well as a selection of API calls to test your Virtual Service.
 
 To understand the reqit.yaml file, examine the one included in the initial image. You can
-re-create this at any time by deleting your reqit.yaml and then running "Command - Write Employee CRUD"
+re-create this at any time by deleting your reqit.yaml and then running `Command - Write Employee CRUD`
 from the supplied Postman collection. Notice that the defined employee entity is used in the
 various API endpoint definitions but has modifications applied to it. For example, the POST
 call modifies its request as follows:
