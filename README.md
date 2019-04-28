@@ -199,7 +199,7 @@ Notice that the POST request excludes the id, therefore the id returned in the r
 the one defined in the employee entity, i.e.
 
 ```
-id: STR func.num(4)
+id: STR, func.num(4)
 ```
 
 so it will be generated.
