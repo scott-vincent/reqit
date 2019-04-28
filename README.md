@@ -119,19 +119,37 @@ reqit read -e person_list --sql
 You can also replace `--sql` with `--csv` to generate CSV data instead and you can redirect the
 output to a file by adding `-o persons.txt`.
 
-Finally, try converting your API from persisted to generated. To do this, edit the reqit.yaml
-file and remove all the `persist:` lines. Now try the following:
+All persisted data is stored in the reqit/persist folder. You can delete this folder if you wish to
+remove all persisted data or you can run `reqit persist --def=person_{id} --delete` to delete a specific
+set of entities.
+
+Finally, try converting your API from persisted to generated. To do this, edit the reqit.yaml file
+and remove all the `persist:` lines. Now try the following:
 
 ```
 reqit call -m get -p /persons
 ```
 
-Notice that you now always get 5 person objects in the output as this is the number defined in the
-alias entry. With persistence, the 5 is ignored and you get however many objects are actually persisted.
+You will always get an empty array because the API doesn't know how many person objects you want to
+generate. Let's change the YAML file so that it generates anywhere between 0 and 5 person objects.
+Edit the file and change the first API definition from this:
 
-All persisted data is stored in the reqit/persist folder. You can delete this folder if you wish to
-remove all persisted data or you can run `reqit persist --def=person_{id} --delete` to delete a specific
-set of entities.
+```
+  - method: GET
+    path: "/persons"
+    response: "[person]"
+```
+
+to this:
+
+```
+  - method: GET
+    path: "/persons"
+    response: "[person, 0-5]"
+```
+
+Now run the above 'call' command again a number of times to confirm that a random number of objects are
+being generated.
 
 If you want further examples of how to use the many available functions when generating data you
 can create a 'sample' entity by typing the following:
