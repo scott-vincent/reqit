@@ -71,8 +71,31 @@ Now type:
 reqit write -e myentity -m ~crud -i myentity.json
 ```
 
-If you now view the reqit.yaml file it will contain an entity called 'myentity' and a complete
-set of API endpoints that use it.
+If you now view the reqit.yaml file it will contain an entity called 'myentity', an alias called
+'myentity_list' and a complete set of API endpoints that use it.
+
+Test your entity with one of the following commands:
+
+```
+reqit read -e myentity
+reqit read -e myentity_list
+```
+
+Test your API with the following commands (note that this API has persistence so you have to create
+some data before you can retrieve it so the first call will return a "Not found" error.
+
+```
+
+```
+
+To generate SQL insert statements for your new entity, try the following:
+
+```
+
+```
+
+You can also replace `--sql` with `--csv` to generate CSV data instead and you can redirect the
+output to a file by adding `-o myentity.txt`.
 
 To generate a sample entity that shows how to use many of the available functions, type:
 
@@ -88,22 +111,6 @@ reqit read -e sample
 ```
 
 Each time you do this it will generate a new set of data.
-
-If you want to generate SQL insert statments for 10 samples, edit the reqit.yaml file and add a new
-section:
-
-```
-alias:
-  sample_set: "[sample, 10]"
-```
-
-and then type:
-
-```
-reqit read -e sample_set -sql
-```
-
-You can redirect this output to a file by adding `-o sample_set.sql` to the above command.
 
 ## Documentation
 
