@@ -234,7 +234,7 @@ To use reqit_mon, first ensure that reqit is running on a server somewhere in ad
 Now type the following:
 
 ```
-reqit_mon http://<server:5000>
+reqit_mon http://<server>:5000
 ```
 
 This will download the remote reqit.yaml file to the current directory of the local machine and
