@@ -27,9 +27,15 @@ reqit run --admin
 ```
 
 will run reqit as a server and will enable "command-line as a service" mode. You can then
-call, e.g. `GET \<server>:5000/?cmd=--help` to request help.
+call, e.g.
 
-To supply input to the command line, use POST instead of GET and include a body.
+```
+GET http://<server>:5000/?cmd=--help
+```
+
+to request help.
+
+To supply input to "command-line as a service", use POST instead of GET and include a body.
 
 ## Pre-requisites
 The only pre-requisite is ASP.NET Core/.NET Core 2.2 Runtime which can be downloaded from here:
