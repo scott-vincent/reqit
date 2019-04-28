@@ -276,8 +276,12 @@ namespace reqit.CmdLine
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"--output '{outFile}' is invalid - {e.Message}");
-                    return 1;
+                    if (!useSql && !useCsv)
+                    {
+                        Console.WriteLine("When outputting JSON, data is written to the persist folder so " +
+                                $"--output must include a variable, e.g. --output employee_{{id}} - {e.Message}");
+                        return 1;
+                    }
                 }
 
                 // Defer redirect if we are outputting multiple files

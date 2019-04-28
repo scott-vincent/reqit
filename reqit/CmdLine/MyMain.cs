@@ -19,8 +19,10 @@ namespace reqit.CmdLine
     /// </summary>
     public class MyMain
     {
-        private static string VersionNum = "1.0.0";
+        private static string VersionNum = "1.1.0";
         private static string CopyrightYear = "2019";
+
+        private static string CRUD_SAMPLE = "~crud";
 
         private readonly ICommand command;
 
@@ -222,10 +224,10 @@ namespace reqit.CmdLine
             app.Command("write", writeCmd =>
             {
                 var writePath = writeCmd.Option("-p|--path", "API endpoint to add to YAML file", CommandOptionType.SingleValue);
-                var writeMethod = writeCmd.Option("-m|--method", $"Method associated with API endpoint or " +
-                        "'{Api.CRUD_SAMPLE}' to add a complete CRUD set with persistence.", CommandOptionType.SingleValue);
-                var writeEntity = writeCmd.Option("-e|--entity", $"Name of entity to add to YAML file or " + 
-                        "'{Entity.SAMPLE}' to add a sample entity", CommandOptionType.SingleValue);
+                var writeMethod = writeCmd.Option("-m|--method", "Method associated with API endpoint or " +
+                        $"'{CRUD_SAMPLE}' to add a complete CRUD set with persistence.", CommandOptionType.SingleValue);
+                var writeEntity = writeCmd.Option("-e|--entity", "Name of entity to add to YAML file or " + 
+                        $"'{Entity.SAMPLE}' to add a sample entity", CommandOptionType.SingleValue);
                 var writeInput = writeCmd.Option("-i|--input", "JSON file to read the entity from", CommandOptionType.SingleValue)
                     .Accepts(v => v.ExistingFile());
                 var writeYaml = writeCmd.Option("--yaml", "Overwrite the entire YAML file (admin mode only)", CommandOptionType.NoValue);
@@ -263,7 +265,7 @@ namespace reqit.CmdLine
                     Api.Methods? method = null;
                     if (writeMethod.HasValue())
                     {
-                        if (writeMethod.Value().Equals("~crud"))
+                        if (writeMethod.Value().Equals(CRUD_SAMPLE, StringComparison.CurrentCultureIgnoreCase))
                         {
                             if (path != null)
                             {
@@ -365,10 +367,10 @@ namespace reqit.CmdLine
             ///
             app.Command("persist", persistCmd =>
             {
-                var persistDef = persistCmd.Option("--def", "API endpoint to call (simulate)", CommandOptionType.SingleValue)
+                var persistDef = persistCmd.Option("--def", "Persist definition, e.g. employees/employee_{id}", CommandOptionType.SingleValue)
                     .IsRequired();
-                var persistShow = persistCmd.Option("--show", "Overwrite the entire YAML file (admin mode only)", CommandOptionType.NoValue);
-                var persistDelete = persistCmd.Option("--delete", "Overwrite the entire YAML file (admin mode only)", CommandOptionType.NoValue);
+                var persistShow = persistCmd.Option("--show", "Shows all currently persisted files matching the specified definition", CommandOptionType.NoValue);
+                var persistDelete = persistCmd.Option("--delete", "Deletes all currently persisted files matching the specified definition", CommandOptionType.NoValue);
 
                 persistCmd.OnExecute(() =>
                 {
