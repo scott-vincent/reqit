@@ -37,9 +37,15 @@ namespace reqit.CmdLine
             // Working dir should be place where assembly (.dll) was loaded from 
             string workingDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
 
-            if (workingDir.StartsWith("file:\\", StringComparison.CurrentCultureIgnoreCase))
+            int prefix = workingDir.IndexOf(':');
+            if (prefix != -1)
             {
-                return workingDir.Substring(6);
+                workingDir = workingDir.Substring(prefix + 1);
+            }
+
+            if (workingDir.StartsWith('\\'))
+            {
+                return workingDir.Substring(1);
             }
             else
             {
