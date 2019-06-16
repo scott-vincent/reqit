@@ -211,7 +211,7 @@ namespace reqit_tests.Engine
         [InlineData("first", "=first", "yes", "no")]
         public void TestFuncIf(params string[] args)
         {
-            string result = this.funcs.FuncIf("test", args, null, null, null);
+            string result = this.funcs.FuncIf("test", args, null, null, null, null);
             Assert.Equal("yes", result);
         }
 
@@ -228,7 +228,7 @@ namespace reqit_tests.Engine
             args[0] = "~num";
             resolver.Init(apiService);
  
-            string result = this.funcs.FuncIf("test", args, new Cache(), "test", this.resolver);
+            string result = this.funcs.FuncIf("test", args, new Cache(), "test", this.resolver, null);
             Assert.Equal("yes", result);
         }
 
