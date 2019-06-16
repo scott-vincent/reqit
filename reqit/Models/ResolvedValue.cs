@@ -66,7 +66,14 @@ namespace reqit.Models
                 }
                 else
                 {
-                    return "\"" + Value.Replace("\"", "\\\"") + "\"";
+                    if (Value.StartsWith("#obj!#:"))
+                    {
+                        return Value.Substring(7);
+                    }
+                    else
+                    {
+                        return "\"" + Value.Replace("\"", "\\\"") + "\"";
+                    }
                 }
             }
             else

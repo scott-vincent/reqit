@@ -21,12 +21,12 @@ namespace reqit.Models
     public class Cache
     {
         private HashSet<string> unresolved;
-        private Dictionary<string, ResolvedValue> resolved;
+        public Dictionary<string, ResolvedValue> Resolved { get; private set; }
 
         public Cache()
         {
             unresolved = new HashSet<string>();
-            resolved = new Dictionary<string, ResolvedValue>();
+            Resolved = new Dictionary<string, ResolvedValue>();
         }
 
         /// <summary>
@@ -40,13 +40,13 @@ namespace reqit.Models
         /// </summary>
         public ResolvedValue GetResolved(string fullName)
         {
-            // Special case: fullName is null for values that shouldn't be cached
-            if (fullName == null)
+            // Special case: fullName is null (or ends with '.NOCACHE') for values that shouldn't be cached
+            if (fullName == null || fullName.EndsWith(".NOCACHE"))
             {
                 return null;
             }
 
-            var value = resolved.GetValueOrDefault(fullName);
+            var value = Resolved.GetValueOrDefault(fullName);
             if (value == null)
             {
                 if (!unresolved.Add(fullName))
@@ -63,13 +63,13 @@ namespace reqit.Models
         /// </summary>
         public void SetResolved(ResolvedValue value)
         {
-            // Special case: name is null for values that shouldn't be cached
-            if (value.Name == null)
+            // Special case: name is null (or ends with '.NOCACHE') for values that shouldn't be cached
+            if (value.Name == null || value.Name.EndsWith(".NOCACHE"))
             {
                 return;
             }
 
-            resolved.Add(value.Name, value);
+            Resolved.Add(value.Name, value);
             unresolved.Remove(value.Name);
         }
 
@@ -80,12 +80,12 @@ namespace reqit.Models
         {
             var value = new ResolvedValue(name, Entity.Types.STR, strValue);
             value.SetValue(strValue);
-            resolved.Add(name, value);
+            Resolved.Add(name, value);
         }
 
         public ResolvedValue GetValue(string name)
         {
-            if (resolved.TryGetValue(name, out var value))
+            if (Resolved.TryGetValue(name, out var value))
             {
                 return value;
             }
@@ -97,12 +97,12 @@ namespace reqit.Models
 
         public ResolvedValue GetValueOrNull(string name)
         {
-            return resolved.GetValueOrDefault(name);
+            return Resolved.GetValueOrDefault(name);
         }
         
         public bool HasValue(string name)
         {
-            return resolved.ContainsKey(name);
+            return Resolved.ContainsKey(name);
         }
     }
 }

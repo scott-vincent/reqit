@@ -13,12 +13,15 @@ namespace reqit.Engine
     /// </summary>
     public class Funcs : IFuncs
     {
-        public enum FuncNames { STR, NUM, DATE, TIME, GEN, RAND, PICK, SAMPLE, REF, IF, MATH };
+        public enum FuncNames { DATE, GEN, IF, MATH, NUM, PICK, RAND, REF, SAMPLE, SPLIT, STR, TIME };
         private enum StrTypes { CAP, UPPER, LOWER, MIXED };
         private enum DateTypes { Y, M, D, h, m, s, i }
 
         private Random random = new Random();
 
+        /// <summary>
+        /// Date function
+        /// </summary>
         public string FuncDate(string called, string[] args)
         {
             string help = "Use func.date(--help) for help.";
@@ -94,6 +97,9 @@ namespace reqit.Engine
             return date.ToString("s", System.Globalization.CultureInfo.InvariantCulture);
         }
 
+        /// <summary>
+        /// Gen function
+        /// </summary>
         public string FuncGen(string called, string[] args)
         {
             string help = "Use func.gen(--help) for help.";
@@ -166,21 +172,25 @@ namespace reqit.Engine
             return generated.ToString();
         }
 
-        public string FuncIf(string called, string[] args, Cache cache, string parent, IResolver resolver)
+        /// <summary>
+        /// If function
+        /// </summary>
+        public string FuncIf(string called, string[] args, Cache cache, string parent, IResolver resolver, IFormatter formatter)
         {
             string help = "Use func.if(--help) for help.";
 
             if (args.Length == 1 && args[0].Equals("--help", StringComparison.CurrentCultureIgnoreCase))
             {
                 // Show usage
-                string usage = "Usage: func.if(arg1, arg2, arg3, arg4) where " +
+                string usage = "Usage: func.if(arg1, arg2, arg3, arg4, [|...]) where " +
                     "arg1=value1, arg2='op'value2 (where op is <, > or =), arg3=returned value if value1'op'value2 is true " +
                     "and arg4=returned value if value1'op'value2 is false. Value1 and value2 may be positive or negative " +
-                    "numbers, strings or attribute names (if preceeded by '~').";
+                    "numbers, strings or attribute/entity names (if preceeded by '~'). " + 
+                    "Additionally, you can use the '|' character for additional op matching, e.g. func.if(a,=1,one,|=2,two,|=3,three,other)";
                 throw new Exception(usage);
             }
 
-            if (args.Length != 4)
+            if (args.Length < 4)
             {
                 throw new Exception($"{called} has bad number of arguments. {help}");
             }
@@ -192,73 +202,114 @@ namespace reqit.Engine
 
             GetOp("+" + args[0], new char[] { '+' }, cache, parent, resolver, out var op, out var val1Str, out var val1Num);
 
-            string val2Str;
-            double val2Num;
-            try
+            int nextOpArg = 1;
+            while (true)
             {
-                GetOp(args[1], new char[] { '>', '<', '=' }, cache, parent, resolver, out op, out val2Str, out val2Num);
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"{called} second argument {e.Message}. {help}");
-            }
-
-            bool passed = false;
-
-            if (val1Str == null && val2Str == null)
-            {
-                // Comparing numbers
-                switch (op)
+                string val2Str;
+                double val2Num;
+                try
                 {
-                    case '>':
-                        passed = (val1Num > val2Num);
-                        break;
-                    case '<':
-                        passed = (val1Num < val2Num);
-                        break;
-                    case '=':
-                    default:
-                        passed = (val1Num == val2Num);
-                        break;
+                    GetOp(args[nextOpArg], new char[] { '>', '<', '=' }, cache, parent, resolver, out op, out val2Str, out val2Num);
                 }
-            }
-            else
-            {
-                // Comparing strings
-                if (val1Str == null)
+                catch (Exception e)
                 {
-                    val1Str = val1Num.ToString();
-                }
-                else if (val2Str == null)
-                {
-                    val2Str = val2Num.ToString();
+                    throw new Exception($"{called} argument {nextOpArg + 1} {e.Message}. {help}");
                 }
 
-                switch (op)
-                {
-                    case '>':
-                        passed = (val1Str.CompareTo(val2Str) == 1);
-                        break;
-                    case '<':
-                        passed = (val1Str.CompareTo(val2Str) == -1);
-                        break;
-                    case '=':
-                    default:
-                        passed = (val1Str.Equals(val2Str));
-                        break;
-                }
-            }
+                bool passed = false;
 
-            if (passed)
-            {
-                return args[2];
-            }
-            else
-            {
-                return args[3];
+                if (val1Str == null && val2Str == null)
+                {
+                    // Comparing numbers
+                    switch (op)
+                    {
+                        case '>':
+                            passed = (val1Num > val2Num);
+                            break;
+                        case '<':
+                            passed = (val1Num < val2Num);
+                            break;
+                        case '=':
+                        default:
+                            passed = (val1Num == val2Num);
+                            break;
+                    }
+                }
+                else
+                {
+                    // Comparing strings
+                    if (val1Str == null)
+                    {
+                        val1Str = val1Num.ToString();
+                    }
+                    else if (val2Str == null)
+                    {
+                        val2Str = val2Num.ToString();
+                    }
+
+                    switch (op)
+                    {
+                        case '>':
+                            passed = (val1Str.CompareTo(val2Str) == 1);
+                            break;
+                        case '<':
+                            passed = (val1Str.CompareTo(val2Str) == -1);
+                            break;
+                        case '=':
+                        default:
+                            passed = (val1Str.Equals(val2Str));
+                            break;
+                    }
+                }
+
+                string operand;
+                if (passed)
+                {
+                    operand = args[nextOpArg + 1];
+                }
+                else
+                {
+                    nextOpArg += 2;
+                    if (args.Length <= nextOpArg)
+                    {
+                        throw new Exception($"{called} has bad number of arguments (last arg must be value returned when there is no match). {help}");
+                    }
+
+                    operand = args[nextOpArg];
+
+                    if (operand[0] == '|')
+                    {
+                        if (args.Length <= (nextOpArg + 1))
+                        {
+                            throw new Exception($"{called} has bad number of arguments. {help}");
+                        }
+
+                        continue;
+                    }
+                }
+
+                if (operand[0] == '~')
+                {
+                    var refValue = GetRefValue(operand, cache, parent, resolver, formatter);
+                    if (refValue.Type == Entity.Types.OBJ)
+                    {
+                        return $"#obj!#:{refValue.Value}";
+                    }
+                    else
+                    {
+                        return refValue.Value;
+                    }
+                }
+                else
+                {
+                    return operand;
+                }
             }
         }
 
+        /// <summary>
+        /// Math function
+        /// </summary>
         public string FuncMath(string called, string[] args, Cache cache, string parent, IResolver resolver)
         {
             string help = "Use func.math(--help) for help.";
@@ -340,6 +391,9 @@ namespace reqit.Engine
             return total.ToString();
         }
 
+        /// <summary>
+        /// Num function
+        /// </summary>
         public string FuncNum(string called, string[] args, Cache cache, string parent, IResolver resolver)
         {
             string help = "Use func.num(--help) for help.";
@@ -427,6 +481,9 @@ namespace reqit.Engine
             }
         }
 
+        /// <summary>
+        /// Pick function
+        /// </summary>
         public string FuncPick(string called, string[] args)
         {
             string help = "Use func.pick(--help) for help.";
@@ -451,6 +508,9 @@ namespace reqit.Engine
             return args[random.Next(args.Length)];
         }
 
+        /// <summary>
+        /// Rand function
+        /// </summary>
         public string FuncRand(string called, string[] args)
         {
             string help = "Use func.rand(--help) for help.";
@@ -504,6 +564,9 @@ namespace reqit.Engine
             }
         }
 
+        /// <summary>
+        /// Ref function
+        /// </summary>
         public string FuncRef(string called, string[] args, Cache cache, string parent, IResolver resolver,
                 out Sample.Genders gender)
         {
@@ -541,6 +604,8 @@ namespace reqit.Engine
         }
 
         /// <summary>
+        /// Sample function
+        /// 
         /// The sample function has a circular dependency on the resolver (so we can
         /// have samples based on the gender of other fields which may not be resolved
         /// yet) so we have to pass the resolver in as a parameter.
@@ -622,6 +687,71 @@ namespace reqit.Engine
             return sample.Value;
         }
 
+        /// <summary>
+        /// Split function
+        /// </summary>
+        public string FuncSplit(string called, string[] args, Cache cache, string parent, IResolver resolver)
+        {
+            string help = "Use func.split(--help) for help.";
+
+            if (args.Length == 1 && args[0].Equals("--help", StringComparison.CurrentCultureIgnoreCase))
+            {
+                // Show usage
+                string usage = "Usage: func.split(arg1, arg2, [arg3]) where " +
+                    "arg1 is an attribute name (may be preceeded by '~') and arg2 is the separator character (or string) you want to split on. " +
+                    "If arg3 is not supplied, the part of arg1 after the last occurrence of arg2 is returned. " +
+                    "If arg3 = 0, the part of arg1 before the first occurrence of arg2 is returned. If arg3 = n, the nth token is returned.";
+                throw new Exception(usage);
+            }
+
+            if (args.Length < 2 || args.Length > 3)
+            {
+                throw new Exception($"{called} has bad number of arguments. {help}");
+            }
+
+            if (args[0].Length == 0)
+            {
+                throw new Exception($"{called} has empty argument. {help}");
+            }
+
+            var refValue = GetRefValue(args[0], cache, parent, resolver);
+            string[] tokens = refValue.Value.Split(args[1]);
+
+            int tokenNum;
+            if (args.Length > 2)
+            {
+                try
+                {
+                    tokenNum = int.Parse(args[2]);
+                }
+                catch (Exception)
+                {
+                    throw new Exception($"{called} third argument must be a number. {help}");
+                }
+
+                // If bad value return empty string
+                if (tokenNum < 0 || tokenNum >= tokens.Length)
+                {
+                    return "";
+                }
+            }
+            else
+            {
+                // If separator not found return an empty string
+                if (tokens.Length == 1)
+                {
+                    return "";
+                }
+
+                tokenNum = tokens.Length - 1;
+            }
+
+            return tokens[tokenNum];
+        }
+
+        /// <summary>
+        /// Str function
+        /// </summary>
         public string FuncStr(string called, string[] args)
         {
             string help = "Use func.str(--help) for help.";
@@ -727,6 +857,9 @@ namespace reqit.Engine
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Time function
+        /// </summary>
         public string FuncTime(string called, string[] args)
         {
             string help = "Use func.time(--help) for help.";
@@ -819,35 +952,63 @@ namespace reqit.Engine
             return "MyDummy";
         }
 
-        private ResolvedValue GetRefValue(string refName, Cache cache, string parent, IResolver resolver)
+        private ResolvedValue GetRefValue(string refName, Cache cache, string parent, IResolver resolver, IFormatter formatter = null)
         {
             if (refName.Length > 1 && refName[0] == '~')
             {
                 refName = refName.Substring(1);
             }
 
-            refName = parent + "." + refName;
+            string fullRefName = parent + "." + refName;
             Entity refAttrib;
             try
             {
-                refAttrib = resolver.FindEntity(refName);
+                refAttrib = resolver.FindEntity(fullRefName);
+                var refValue = new ResolvedValue(fullRefName, refAttrib.Type, refAttrib.Value);
+                try
+                {
+                    resolver.Resolve(refValue, cache);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"references unresolvable attribute '{refName}': {e.Message}");
+                }
+
+                return refValue;
             }
             catch (Exception)
             {
+                // Allow an unknown attribute if it's in the cache (might be a temporary attribute created by a mod)
+                try
+                {
+                    return cache.GetValue(fullRefName);
+                }
+                catch
+                {
+                    // do nothing
+                }
+
+                if (formatter != null)
+                {
+                    // Might be a complete entity rather than an attribute
+                    Entity refEntity;
+                    try
+                    {
+                        refEntity = resolver.FindEntity(refName);
+                        // The value is the entity in JSON format
+                        string strValue = formatter.EntityToJson(refEntity, cache);
+                        var refValue = new ResolvedValue("", Entity.Types.OBJ, strValue);
+                        refValue.SetValue(strValue);
+                        return refValue;
+                    }
+                    catch (Exception)
+                    {
+                        throw new Exception($"references unknown attribute or entity '{refName}'");
+                    }
+                }
+
                 throw new Exception($"references unknown attribute '{refName}'");
             }
-
-            var refValue = new ResolvedValue(refName, refAttrib.Type, refAttrib.Value);
-            try
-            {
-                resolver.Resolve(refValue, cache);
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"references unresolvable attribute '{refName}': {e.Message}");
-            }
-
-            return refValue;
         }
 
         private bool GetRange(string arg, out int min, out int max)
@@ -1035,7 +1196,7 @@ namespace reqit.Engine
         }
 
         /// <summary>
-        /// Parses '>4', '<-7.5', '+2.45', '=Blah' etc and returns the op and
+        /// Parses '>4', '<-7.5', '+2.45', '=Blah', '|=2' etc and returns the op and
         /// operand as separate values. Operand can be a number, string or
         /// attribute name (if preceeded by ~). An attribute is resolved to
         /// its number or string value. If a number is returned, valStr will
@@ -1044,6 +1205,12 @@ namespace reqit.Engine
         private void GetOp(string arg, char[] validOps, Cache cache, string parent, IResolver resolver,
                 out char op, out string valStr, out double valNum)
         {
+            // Ignore pipe (OR) character
+            if (arg[0] == '|')
+            {
+                arg = arg.Substring(1);
+            }
+
             if (arg.Length < 2)
             {
                 throw new Exception("must be in format 'op'num, e.g. >-4");
@@ -1054,7 +1221,7 @@ namespace reqit.Engine
 
             if (!validOps.Contains(op))
             {
-                throw new Exception($"must start with one of: {String.Join(", ", validOps)}");
+                throw new Exception($"op must be one of: {String.Join(", ", validOps)}");
             }
 
             if (operand[0] == '~')

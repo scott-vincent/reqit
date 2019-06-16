@@ -4,43 +4,49 @@ entity:
     title: STR, func.sample(title)
     first_name: STR, func.sample(firstname, ~title)
     last_name: STR, func.sample(lastname)
-    email: STR, func.ref(first_name).func.ref(last_name)@func.sample(email)
-    religion: STR, func.sample(religion)
-    country: STR, func.sample(country)
+    properties: STR, func.if(~testType, =PASS, ~propsPass, |=REFER, ~propsRefer, ~propsFail)
 
-alias:
-  employee_list: "[employee, 5]"
+  propsPass:
+    - REF, propPass
+
+  propsRefer:
+    - REF, propPass
+    - REF, propRefer
+
+  propsFail:
+    - REF, propFail
+
+  propPass:
+    key: STR, flag
+    value: STR, PASS
+
+  propRefer:
+    key: STR, flag
+    value: STR, REFER
+
+  propFail:
+    key: STR, flag
+    value: STR, FAIL
+
+  testPick: STR, func.pick(PASS, REFER, FAIL)
 
 api:
   - method: GET
     path: "/employees"
     response: "[employee]"
-    persist: "employees/employee_{id}"
+
+  - method: GET
+    path: "/employees/1"
+    response: employee, testType=PASS
+
+  - method: GET
+    path: "/employees/2"
+    response: employee, testType=REFER
+
+  - method: GET
+    path: "/employees/3"
+    response: employee, testType=FAIL
 
   - method: GET
     path: "/employees/{id}"
-    response: employee, id=~path.id
-    persist: "employees/employee_{id}"
-    # Change persist var to {*} to return a persisted file chosen at random
-
-  - method: PUT
-    path: "/employees/{id}"
-    request: employee, id=~path.id
-    response: employee, *=~request
-    persist: "employees/employee_{id}"
-
-  - method: PATCH
-    path: "/employees/{id}"
-    request: employee, id=~path.id
-    response: employee, *=~request
-    persist: "employees/employee_{id}"
-
-  - method: POST
-    path: "/employees"
-    request: employee, !id
-    response: employee, *=~request
-    persist: "employees/employee_{id}"
-
-  - method: DELETE
-    path: "/employees/{id}"
-    persist: "employees/employee_{path.id}"
+    response: employee, testType=~testPick

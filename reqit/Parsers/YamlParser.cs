@@ -294,11 +294,29 @@ namespace reqit.Parsers
                 }
 
                 // Make sure api does not already exist
+                int existingNum = 0;
                 foreach (var existingApi in ApiService.Apis)
                 {
+                    existingNum++;
                     if (api.Method == existingApi.Method && api.Path.Equals(existingApi.Path, out var pathEntities))
                     {
-                        throw new Exception($"api.~{apiNum} is a duplicate");
+                        // Apis match but check to see if the existing path can hide the added path by
+                        // applying the resolved values to it and checking for an exact match.
+                        string concretePath = existingApi.Path.ToString();
+                        foreach (var entity in pathEntities.Resolved)
+                        {
+                            if (entity.Key.StartsWith("path."))
+                            {
+                                string pathVar = "{" + entity.Key.Substring(5) + "}";
+                                concretePath = concretePath.Replace(pathVar, entity.Value.Value);
+                            }
+                        }
+
+                        if (concretePath.Equals(api.Path.ToString()))
+                        {
+                            throw new Exception($"api.~{apiNum} is a duplicate or is hidden by api.~{existingNum}. " +
+                                "Try changing the order so that concrete apis come before variable apis.");
+                        }
                     }
                 }
 

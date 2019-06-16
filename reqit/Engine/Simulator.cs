@@ -165,6 +165,7 @@ namespace reqit.Engine
                     // Generate response
                     try
                     {
+                        addResponseMods(cache, api.Response.Mods);
                         json = this.formatter.EntityToJson(response, cache, api.Response.Mods);
                     }
                     catch (Exception e)
@@ -376,6 +377,56 @@ namespace reqit.Engine
             }
 
             return json;
+        }
+
+        /// <summary>
+        /// Resolve all mods and add to cache (ignore special cases)
+        /// </summary>
+        private void addResponseMods(Cache cache, Dictionary<string, string> mods)
+        {
+            foreach (var mod in mods)
+            {
+                ResolvedValue resolving;
+
+                if (!mod.Key.Equals("*") && mod.Value != null)
+                {
+                    if (mod.Value[0] == '~')
+                    {
+                        // Try to retrieve modded value from cache
+                        string findName = mod.Value.Substring(1);
+
+                        var refEntity = this.resolver.FindEntity(findName);
+                        resolving = new ResolvedValue(findName, refEntity.Type, refEntity.Value);
+                        this.resolver.Resolve(resolving, cache, this.formatter);
+
+                        // Also add to cache using mod key name
+                        cache.AddResolved(mod.Key, resolving.Value);
+                    }
+                    else
+                    {
+                        // Mod value is a literal
+                        string value;
+                        if (mod.Value[0] == '"' && mod.Value[mod.Value.Length - 1] == '"')
+                        {
+                            value = mod.Value.Substring(1, mod.Value.Length - 2);
+                        }
+                        else
+                        {
+                            value = mod.Value;
+
+                            // Still needs resolving if it contains funcs
+                            //if (value.Contains("func."))
+                            //{
+                            //    resolving = new ResolvedValue(mod.Key, Entity.Types.STR, value);
+                            //    this.resolver.Resolve(resolving, cache, this.formatter);
+                            //    return;
+                            //}
+                        }
+
+                        cache.AddResolved(mod.Key, value);
+                    }
+                }
+            }
         }
     }
 }

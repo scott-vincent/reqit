@@ -80,6 +80,13 @@ namespace reqit.Models
                 modStart++;
             }
 
+            // Don't allow funcs in mods as they cause parsing problems.
+            // They need to go in aliases instead.
+            if (bodyDef.Substring(modStart).Contains("func."))
+            {
+                throw new Exception("Do not put funcs directly in mods. Define an entity instead and reference it in the mod, e.g. myChoice: STR, func.pick(Yes, No) then use mod=~myChoice");
+            }
+
             string[] mods = bodyDef.Substring(modStart).Split(',');
             Mods = new Dictionary<string, string>();
 

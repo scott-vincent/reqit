@@ -14,6 +14,7 @@ namespace reqit.Engine
 
         public ApiService ApiService { get; private set; }
         private EntityIndex loadedEntities;
+        private IFormatter formatter = null;
 
         private readonly ISamplesParser samplesParser;
         private readonly IFuncs funcs;
@@ -103,8 +104,13 @@ namespace reqit.Engine
         /// consistent genders across a complete entity. When resolving
         /// a new entity pass in a new cache.
         /// </summary>
-        public void Resolve(ResolvedValue resolving, Cache cache)
+        public void Resolve(ResolvedValue resolving, Cache cache, IFormatter formatter = null)
         {
+            if (formatter != null)
+            {
+                this.formatter = formatter;
+            }
+
             try
             {
                 ResolveValue(resolving, cache);
@@ -256,7 +262,17 @@ namespace reqit.Engine
 
             // Resolve arg list (in case funcs are being passed as args to other funcs) but don't add
             // to cache as we want them to evaluate differently each time (if they're random).
-            var resolvingArgs = new ResolvedValue(null, Entity.Types.STR, argList);
+            string nocacheParent;
+            int sep = parentName.IndexOf('.');
+            if (sep == -1)
+            {
+                nocacheParent = parentName + ".NOCACHE";
+            }
+            else
+            {
+                nocacheParent = parentName.Substring(0, sep) + ".NOCACHE";
+            }
+            var resolvingArgs = new ResolvedValue(nocacheParent, Entity.Types.STR, argList);
             ResolveValue(resolvingArgs, cache);
             gender = resolvingArgs.Gender;
 
@@ -268,27 +284,20 @@ namespace reqit.Engine
             Sample.Genders newGender;
             switch (func)
             {
-                case Funcs.FuncNames.STR:
-                    return this.funcs.FuncStr(called, args);
-                case Funcs.FuncNames.NUM:
-                    return this.funcs.FuncNum(called, args, cache, parentName, this);
                 case Funcs.FuncNames.DATE:
                     return this.funcs.FuncDate(called, args);
-                case Funcs.FuncNames.TIME:
-                    return this.funcs.FuncTime(called, args);
                 case Funcs.FuncNames.GEN:
                     return this.funcs.FuncGen(called, args);
-                case Funcs.FuncNames.RAND:
-                    return this.funcs.FuncRand(called, args);
+                case Funcs.FuncNames.IF:
+                    return this.funcs.FuncIf(called, args, cache, parentName, this, this.formatter);
+                case Funcs.FuncNames.MATH:
+                    return this.funcs.FuncMath(called, args, cache, parentName, this);
+                case Funcs.FuncNames.NUM:
+                    return this.funcs.FuncNum(called, args, cache, parentName, this);
                 case Funcs.FuncNames.PICK:
                     return this.funcs.FuncPick(called, args);
-                case Funcs.FuncNames.SAMPLE:
-                    result = this.funcs.FuncSample(called, args, cache, parentName, this, out newGender);
-                    if (newGender != Sample.Genders.NEUTRAL)
-                    {
-                        gender = newGender;
-                    }
-                    return result;
+                case Funcs.FuncNames.RAND:
+                    return this.funcs.FuncRand(called, args);
                 case Funcs.FuncNames.REF:
                     result = this.funcs.FuncRef(called, args, cache, parentName, this, out newGender);
                     if (newGender != Sample.Genders.NEUTRAL)
@@ -296,10 +305,19 @@ namespace reqit.Engine
                         gender = newGender;
                     }
                     return result;
-                case Funcs.FuncNames.IF:
-                    return this.funcs.FuncIf(called, args, cache, parentName, this);
-                case Funcs.FuncNames.MATH:
-                    return this.funcs.FuncMath(called, args, cache, parentName, this);
+                case Funcs.FuncNames.SAMPLE:
+                    result = this.funcs.FuncSample(called, args, cache, parentName, this, out newGender);
+                    if (newGender != Sample.Genders.NEUTRAL)
+                    {
+                        gender = newGender;
+                    }
+                    return result;
+                case Funcs.FuncNames.SPLIT:
+                    return this.funcs.FuncSplit(called, args, cache, parentName, this);
+                case Funcs.FuncNames.STR:
+                    return this.funcs.FuncStr(called, args);
+                case Funcs.FuncNames.TIME:
+                    return this.funcs.FuncTime(called, args);
                 default:
                     throw new Exception($"Missing function name: {func}");
             }

@@ -11,6 +11,6 @@ namespace reqit.Engine
         Entity FindEntity(string name);
         List<string> GetSampleNames();
         Samples GetSamples(string samplesName);
-        void Resolve(ResolvedValue resolving, Cache cache);
+        void Resolve(ResolvedValue resolving, Cache cache, IFormatter formatter = null);
     }
 }

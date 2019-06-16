@@ -229,39 +229,24 @@ namespace reqit.Engine
                     // Apply mod prefix to attribute name.
                     // e.g. if *=~request, employee.id becomes ~request.employee.id
                     mod += "." + fullName;
-                }
-
-                if (mod != null)
-                {
                     if (mod[0] == '~')
                     {
-                        // Retrieve modded value from cache
-                        string modName = mod.Substring(1);
-                        try
-                        {
-                            resolving = cache.GetValue(modName);
-                        }
-                        catch (Exception e)
-                        {
-                            // Not an error if request or query value not found
-                            if (!modName.StartsWith("request.") && !modName.StartsWith("query."))
-                            {
-                                throw e;
-                            }
-                            resolving = null;
-                        }
+                        mod = mod.Substring(1);
                     }
-                    else
+
+                    // Retrieve from cache
+                    try
                     {
-                        // Mod value is a literal
-                        if (mod[0] == '"' && mod[mod.Length - 1] == '"')
+                        resolving = cache.GetValue(mod);
+                    }
+                    catch (Exception e)
+                    {
+                        // Not an error if request or query value not found
+                        if (!mod.StartsWith("request.") && !mod.StartsWith("query."))
                         {
-                            resolving = new ResolvedValue("", Entity.Types.STR, mod.Substring(1, mod.Length - 2));
+                            throw e;
                         }
-                        else
-                        {
-                            resolving = new ResolvedValue("", Entity.Types.STR, mod);
-                        }
+                        resolving = null;
                     }
                 }
 
@@ -269,7 +254,7 @@ namespace reqit.Engine
                 {
                     // No mod applied
                     resolving = new ResolvedValue(fullName, entity.Type, entity.Value);
-                    this.resolver.Resolve(resolving, cache);
+                    this.resolver.Resolve(resolving, cache, this);
                 }
 
                 sb.Append(resolving.GetValue(false));
@@ -411,7 +396,7 @@ namespace reqit.Engine
                         sb.Append(",");
                     }
 
-                    this.resolver.Resolve(attribute, cache);
+                    this.resolver.Resolve(attribute, cache, this);
                     sb.Append(attribute.GetValue(isSql));
                 }
 

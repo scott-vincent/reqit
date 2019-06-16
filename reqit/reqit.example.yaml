@@ -21,6 +21,7 @@ api:
     path: "/employees/{id}"
     response: employee, id=~path.id
     persist: "employees/employee_{id}"
+    # Change persist var to {*} to return a persisted file chosen at random
 
   - method: PUT
     path: "/employees/{id}"

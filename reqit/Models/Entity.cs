@@ -23,7 +23,7 @@ namespace reqit.Models
         public static string NULL = "<null>";
         public static string SAMPLE = "~sample";
 
-        public enum Types { PARENT, ARRAY, REPEAT, REF, STR, NUM, BOOL, DATE };
+        public enum Types { PARENT, ARRAY, REPEAT, REF, STR, NUM, BOOL, DATE, OBJ };
 
         public string Name { get; }
         public Types Type { get; }

@@ -815,25 +815,27 @@ namespace reqit.CmdLine
 
         public void ShowFuncHelp()
         {
-            FuncHelp("DATE", this.funcs.FuncDate, null, null);
-            FuncHelp("GEN", this.funcs.FuncGen, null, null);
-            FuncHelp("IF", null, this.funcs.FuncIf, null);
-            FuncHelp("MATH", null, this.funcs.FuncMath, null);
-            FuncHelp("NUM", null, this.funcs.FuncNum, null);
-            FuncHelp("PICK", this.funcs.FuncPick, null, null);
-            FuncHelp("RAND", this.funcs.FuncRand, null, null);
+            FuncHelp("DATE", this.funcs.FuncDate);
+            FuncHelp("GEN", this.funcs.FuncGen);
+            FuncHelp("IF", null, null, null, this.funcs.FuncIf);
+            FuncHelp("MATH", null, this.funcs.FuncMath);
+            FuncHelp("NUM", null, this.funcs.FuncNum);
+            FuncHelp("PICK", this.funcs.FuncPick);
+            FuncHelp("RAND", this.funcs.FuncRand);
             FuncHelp("REF", null, null, this.funcs.FuncRef);
             FuncHelp("SAMPLE", null, null, this.funcs.FuncSample);
-            FuncHelp("STR", this.funcs.FuncStr, null, null);
-            FuncHelp("TIME", this.funcs.FuncTime, null, null);
+            FuncHelp("SPLIT", null, this.funcs.FuncSplit);
+            FuncHelp("STR", this.funcs.FuncStr);
+            FuncHelp("TIME", this.funcs.FuncTime);
         }
 
         private delegate string FuncType1(string called, string[] args);
         private delegate string FuncType2(string called, string[] args, Cache cache, string parent, IResolver resolver);
         private delegate string FuncType3(string called, string[] args, Cache cache, string parent, IResolver resolver,
                 out Sample.Genders gender);
+        private delegate string FuncType4(string called, string[] args, Cache cache, string parent, IResolver resolver, IFormatter formatter);
 
-        private void FuncHelp(string funcName, FuncType1 func1, FuncType2 func2, FuncType3 func3)
+        private void FuncHelp(string funcName, FuncType1 func1, FuncType2 func2 = null, FuncType3 func3 = null, FuncType4 func4 = null)
         {
             Console.WriteLine($"\n{funcName}");
 
