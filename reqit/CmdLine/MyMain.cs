@@ -19,7 +19,7 @@ namespace reqit.CmdLine
     /// </summary>
     public class MyMain
     {
-        private static string VersionNum = "1.2.1";
+        private static string VersionNum = "1.2.2";
         private static string CopyrightYear = "2019";
 
         private static string CRUD_SAMPLE = "~crud";
